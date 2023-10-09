@@ -34,10 +34,10 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/PanJiaChen/vue-admin-template.git
+git clone https://github.com/lhshilin/background-system.git
 
 # 进入项目目录
-cd vue-admin-template
+cd background-system
 
 # 安装依赖
 npm install
@@ -46,7 +46,7 @@ npm install
 npm install --registry=https://registry.npm.taobao.org
 
 # 启动服务
-npm run dev
+npm run serve
 ```
 
 浏览器访问 [http://localhost:9528](http://localhost:9528)
