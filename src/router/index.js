@@ -46,7 +46,6 @@ export const constantRoutes = [
   {
     path: '/personalCenter',
     component: Layout,
-    redirect: '/personalCenter',
     hidden: true,
     children: [{
       path: 'personalCenter',
@@ -71,7 +70,6 @@ export const constantRoutes = [
   {
     path: '/home',
     component: Layout,
-    redirect: '/home',
     children: [{
       path: 'index',
       name: 'Home',
@@ -83,7 +81,7 @@ export const constantRoutes = [
   {
     path: '/blog',
     component: Layout,
-    redirect: '/blog',
+    redirect: '/blog/blogList',
     name: 'Blog',
     meta: { title: '文章管理', icon: 'el-icon-s-order' },
     children: [
@@ -119,7 +117,7 @@ export const constantRoutes = [
   {
     path: '/project',
     component: Layout,
-    redirect: '/project',
+    redirect: '/project/projectList',
     name: 'Project',
     meta: { title: '项目管理', icon: 'el-icon-suitcase-1' },
     children: [
@@ -141,7 +139,6 @@ export const constantRoutes = [
   {
     path: '/comment',
     component: Layout,
-    redirect: '/comment',
     children: [{
       path: 'index',
       name: 'Comment',
@@ -153,7 +150,6 @@ export const constantRoutes = [
   {
     path: '/message',
     component: Layout,
-    redirect: '/message',
     children: [{
       path: 'index',
       name: 'Message',
@@ -165,7 +161,6 @@ export const constantRoutes = [
   {
     path: '/about',
     component: Layout,
-    redirect: '/about',
     children: [{
       path: 'index',
       name: 'About',
@@ -177,7 +172,6 @@ export const constantRoutes = [
   {
     path: '/setting',
     component: Layout,
-    redirect: '/setting',
     children: [{
       path: 'index',
       name: 'Setting',

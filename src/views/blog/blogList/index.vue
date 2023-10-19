@@ -83,11 +83,7 @@
         align="center"
       >
         <template slot-scope="scope">
-          {{
-            scope.row.category.name === null
-              ? "未分类"
-              : scope.row.category.name
-          }}
+          {{ scope.row.category === null ? "未分类" : scope.row.category.name }}
         </template>
       </el-table-column>
 
@@ -189,6 +185,9 @@ export default {
         id: -1,
         name: "全部",
       });
+      this.options.push({
+        name: "未分类",
+      });
     });
   },
   watch: {
@@ -204,16 +203,19 @@ export default {
       this.pagerCurrentPage = 1;
       this.srcList = [];
       getBlogList(this.currentPage, this.count).then(({ data }) => {
-        const filtrationData = [];
-        this.data = data.rows.map((data) => {
+        this.data = data.rows.filter((data) => {
+          if (!data.category) {
+            data.category = {
+              name: "未分类",
+            };
+          }
           if (data.category.name === newVal) {
             data.createDate = formatDate(data.createDate);
             // data.thumb = server_URL + data.thumb;
             this.srcList.push(data.thumb);
-            filtrationData.push(data);
+            return data;
           }
         });
-        this.data = filtrationData;
       });
     },
   },

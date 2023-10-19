@@ -122,8 +122,7 @@ export default {
       if (
         newData.title &&
         newData.description &&
-        newData.categoryId &&
-        newData.htmlContent
+        newData.htmlContent !== "<p><br></p>"
       ) {
         if (this.mode === "add") {
           localStorage.removeItem("saveEditData");
@@ -145,7 +144,17 @@ export default {
           });
         }
       } else {
-        this.$message.error("请填写所有内容");
+        let errArr = [];
+        if (!newData.title) {
+          errArr.push("文章的标题");
+        }
+        if (!newData.description) {
+          errArr.push("文章的描述");
+        }
+        if (newData.htmlContent === "<p><br></p>") {
+          errArr.push("文章的内容");
+        }
+        this.$message.error(`请填写 ${errArr.join(",")} 信息`);
       }
     },
     // 保存编辑
