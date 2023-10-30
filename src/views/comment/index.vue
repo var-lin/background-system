@@ -1,5 +1,36 @@
 <template>
   <div class="comment-container">
+    <!-- 搜索框 -->
+    <div style="margin-bottom: 15px" v-if="oldData.length != 0">
+      <el-input
+        placeholder="请输入搜索内容"
+        v-model.trim="searchContent"
+        class="input-with-select"
+        @keyup.enter.native="searchHandle"
+      >
+        <el-select v-model="searchMethod" slot="prepend" placeholder="请选择">
+          <el-option label="昵称" value="nickname"></el-option>
+          <el-option label="评论内容" value="content"></el-option>
+          <el-option label="文章标题" value="blogTitle"></el-option>
+          <el-option label="id" value="id"></el-option>
+        </el-select>
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="searchHandle"
+        ></el-button>
+        <el-button
+          slot="append"
+          @click="
+            data = oldData;
+            searching = false;
+          "
+          >返回旧数据</el-button
+        >
+      </el-input>
+    </div>
+
+    <!-- 文章评论列表 -->
     <el-table
       v-loading="listLoading"
       :data="data"
@@ -67,7 +98,7 @@
               icon="el-icon-delete"
               circle
               size="mini"
-              @click="deleteCommentHandle(scope.row)"
+              @click="deleteHandle(scope.row)"
             ></el-button>
           </el-tooltip>
         </template>
@@ -77,6 +108,7 @@
     <!-- 分页组件 -->
     <el-pagination
       style="margin-top: 30px"
+      v-if="!listLoading && !searching"
       background
       :page-size="eachPage"
       :page-sizes="[5, 10, 15, 20]"
@@ -94,85 +126,10 @@
 
 <script>
 import { getComment, delComment } from "@/api/comment";
-import { formatDate } from "@/utils/tools";
-// import { server_URL, frontEnd_URL } from "@/urlConfig";
+import commentMag from "@/mixins/commentMag";
 
 export default {
-  data() {
-    return {
-      data: [],
-      listLoading: false,
-      currentPage: 1, // 当前第几页
-      eachPage: 5, // 一页显示多少条
-      count: 0, // 评论总数量
-      totalPage: 0, // 总页数
-      pagerCurrentPage: 1, // 页码栏第几页
-    };
-  },
-  created() {
-    this.fetchData();
-  },
-  methods: {
-    fetchData() {
-      this.listLoading = true;
-      getComment(this.currentPage, this.eachPage).then(({ data }) => {
-        this.listLoading = false;
-        this.data = data.rows;
-        for (let i of this.data) {
-          // i.avatar = server_URL + i.avatar;
-          i.createDate = formatDate(i.createDate);
-        }
-        this.count = data.total;
-        this.totalPage = Math.ceil(this.count / this.eachPage); // 总页数
-        if (this.currentPage > this.totalPage) {
-          this.currentPage = this.totalPage;
-          this.fetchData();
-        }
-      });
-    },
-    // 删除评论函数
-    deleteCommentHandle({ id }) {
-      this.$confirm("是否删除该评论", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          delComment(id).then(() => {
-            this.fetchData();
-            this.$message({
-              type: "success",
-              message: "删除成功!",
-            });
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-    },
-    // 四个分页组件方法
-    sizeChangeHandle(pageNum) {
-      this.eachPage = parseInt(pageNum);
-      this.currentPage = 1;
-      this.pagerCurrentPage = 1;
-      this.fetchData();
-    },
-    currentChangeHandle(pageNum) {
-      this.currentPage = parseInt(pageNum);
-      this.fetchData();
-    },
-    // 上一页
-    prevClickHandle() {
-      this.currentPage -= 1;
-    },
-    // 下一页
-    nextClickHandle() {
-      this.currentPage += 1;
-    },
-  },
+  mixins: [commentMag("comment", getComment, delComment)],
 };
 </script>
 

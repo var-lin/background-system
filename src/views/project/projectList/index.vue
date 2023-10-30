@@ -1,5 +1,23 @@
 <template>
   <div class="project-list-container">
+    <!-- 搜索框 -->
+    <div style="margin-bottom: 15px" v-if="oldData.length != 0">
+      <el-input
+        placeholder="请输入项目名称搜索"
+        v-model.trim="searchContent"
+        class="input-with-select"
+        @keyup.enter.native="searchHandle"
+      >
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="searchHandle"
+        ></el-button>
+        <el-button slot="append" @click="data = oldData">返回旧数据</el-button>
+      </el-input>
+    </div>
+
+    <!-- 项目列表 -->
     <el-table
       v-loading="listLoading"
       :data="data"
@@ -164,6 +182,7 @@ export default {
   data() {
     return {
       data: [], // 项目数据
+      oldData: [], // 搜索后返回的数据，复制的data数据
       listLoading: false,
       scrList: [],
       dialogFormVisible: false, // 编辑框不可见
@@ -175,6 +194,7 @@ export default {
         thumb: "",
         order: 1,
       },
+      searchContent: "", // 搜索内容
     };
   },
   created() {
@@ -191,7 +211,44 @@ export default {
           // this.scrList.push(server_URL + i.thumb);
           this.scrList.push(i.thumb);
         }
+        this.oldData = this.data;
       });
+    },
+    searchHandle() {
+      if (!this.searchContent) {
+        // 没有搜索内容
+        this.$message({
+          type: "error",
+          message: `请输入搜索内容`,
+        });
+        return;
+      }
+
+      // 搜索内容转小写
+      const searchContent = this.searchContent.toLowerCase();
+      const data = this.oldData.filter((data) => {
+        // 数据转小写
+        const dataContent = data.name.toLowerCase();
+        if (dataContent.includes(searchContent)) {
+          return data;
+        }
+      });
+
+      const dataLength = data.length;
+      if (dataLength) {
+        this.data = data;
+        this.$message({
+          type: "success",
+          message: `共搜索到 ${dataLength} 个数据`,
+        });
+      } else {
+        this.$message({
+          type: "error",
+          message: `没有搜索到相关评论`,
+        });
+        this.listLoading = false;
+        this.searching = false;
+      }
     },
     // 跳转项目github地址
     openGithubHandle(projectInfo) {
