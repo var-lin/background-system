@@ -125,11 +125,11 @@ export default {
         newData.htmlContent !== "<p><br></p>"
       ) {
         if (this.mode === "add") {
-          localStorage.removeItem("saveEditData");
           // 添加文章
           addBlog(newData).then((res) => {
-            this.$router.push("/blog/blogList");
+            localStorage.removeItem("saveEditData");
             this.$message.success("添加文章成功");
+            this.$router.push("/blog/blogList");
           });
         } else {
           // 编辑文章
@@ -139,8 +139,20 @@ export default {
             newData.createDate = this.createDate;
           }
           editBlog({ id: this.form.id, data: newData }).then((res) => {
-            this.$router.push("/blog/blogList");
-            this.$message.success("修改文章成功");
+            if (typeof res === "string") {
+              // 编辑文章上传失败
+              res = JSON.parse(res);
+              const msg = JSON.parse(res.msg);
+              for (const i of msg) {
+                this.$message.error(i.message + ": " + i.field);
+              }
+            } else {
+              // 编辑文章上传成功
+              this.$router.push("/blog/blogList");
+              if (!this.checked) {
+                this.$message.success("修改文章成功");
+              }
+            }
           });
         }
       } else {
@@ -159,12 +171,17 @@ export default {
     },
     // 保存编辑
     saveEditHandle() {
-      if (!this.form.title && !this.form.editorText && !this.form.description) {
+      const htmlContent = this.$refs.toastuiEditor.invoke("getHTML");
+      if (
+        !this.form.title &&
+        htmlContent === "<p><br></p>" &&
+        !this.form.description
+      ) {
         this.$message.error("未有编辑内容");
         return;
       }
       const newData = this.form;
-      newData.htmlContent = this.$refs.toastuiEditor.invoke("getHTML");
+      newData.htmlContent = htmlContent;
       localStorage.setItem("saveEditData", JSON.stringify(newData));
       this.$message.success("保存编辑成功");
     },
