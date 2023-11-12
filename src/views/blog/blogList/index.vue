@@ -210,7 +210,7 @@ export default {
       }
       if (!this.allData.length) {
         const res = await getBlogList(1, this.count);
-        this.allData = res.data.rwos;
+        this.allData = res.data.rows;
       }
       this.isDisplayPagination = false;
       this.currentPage = 1;
