@@ -11,7 +11,7 @@
         <el-select v-model="searchMethod" slot="prepend" placeholder="请选择">
           <el-option label="昵称" value="nickname"></el-option>
           <el-option label="评论内容" value="content"></el-option>
-          <el-option label="文章标题" value="blogTitle"></el-option>
+          <el-option label="评论文章" value="blogTitle"></el-option>
           <el-option label="id" value="id"></el-option>
         </el-select>
         <el-button
@@ -136,5 +136,13 @@ export default {
 <style lang="scss" scoped>
 .comment-container {
   padding: 20px;
+
+  .el-select {
+    width: 8em;
+  }
+
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
 }
 </style>

@@ -1,19 +1,16 @@
 import { formatDate } from "@/utils/tools";
+import pagination from "@/mixins/pagination"; // 分页
 // import { server_URL } from "@/urlConfig";
 
 export default function (component, getCommentHandle, delHandle) {
     return {
+        mixins: [pagination()],
         data() {
             return {
                 data: [],
                 oldData: [],
                 allData: [], // 全部评论
                 listLoading: false,
-                currentPage: 1, // 当前第几页
-                eachPage: 5, // 一页显示多少条
-                count: 0, // 评论总数量
-                totalPage: 0, // 总页数
-                pagerCurrentPage: 1, // 页码栏第几页
                 searchMethod: "nickname", // 搜索方式
                 searchContent: "", // 搜索内容
                 searching: false, // 进入搜索
@@ -127,25 +124,6 @@ export default function (component, getCommentHandle, delHandle) {
                             message: "已取消删除",
                         });
                     });
-            },
-            // 四个分页组件方法
-            sizeChangeHandle(pageNum) {
-                this.eachPage = parseInt(pageNum);
-                this.currentPage = 1;
-                this.pagerCurrentPage = 1;
-                this.fetchData();
-            },
-            currentChangeHandle(pageNum) {
-                this.currentPage = parseInt(pageNum);
-                this.fetchData();
-            },
-            // 上一页
-            prevClickHandle() {
-                this.currentPage -= 1;
-            },
-            // 下一页
-            nextClickHandle() {
-                this.currentPage += 1;
             },
         }
     }

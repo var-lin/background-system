@@ -1,19 +1,31 @@
 <template>
   <div class="blog-list-container">
-    <!-- 选择文章分类 -->
-    <el-select
-      v-model="value"
-      placeholder="请选择文章分类"
-      style="margin-bottom: 20px"
-    >
-      <el-option
-        v-for="item in options"
-        :key="item.id"
-        :label="item.name"
-        :value="item.name"
+    <!-- 搜索框 -->
+    <div style="margin-bottom: 15px" v-if="options.length">
+      <el-input
+        placeholder="请输入搜索内容"
+        v-model.trim="searchContent"
+        class="input-with-select"
+        @keyup.enter.native="searchHandle"
       >
-      </el-option>
-    </el-select>
+        <!-- 选择文章分类 -->
+        <el-select v-model="value" slot="prepend" placeholder="请选择文章分类">
+          <el-option
+            v-for="item in options"
+            :key="item.id"
+            :label="item.name"
+            :value="item.name"
+          >
+          </el-option>
+        </el-select>
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="searchHandle"
+        ></el-button>
+        >
+      </el-input>
+    </div>
 
     <!-- 文章列表 -->
     <el-table :data="data" style="width: 100%" border>
@@ -158,21 +170,19 @@
 import { getBlogList, delOneBlog } from "@/api/blog";
 import { getBlogType } from "@/api/blogType";
 import { formatDate } from "@/utils/tools";
+import pagination from "@/mixins/pagination";
 // import { server_URL, frontEnd_URL } from "@/urlConfig";
 
 export default {
+  mixins: [pagination()],
   data() {
     return {
       data: [],
+      allData: [],
       srcList: [], // 博客预览图
-      eachPage: 5, // 分页每页显示条数
-      currentPage: 1, // 当前页码，默认第一页
-      totalPage: 0, // 总页数
-      count: 0, // 数据总条数
-      pagerCurrentPage: 1, // 分页栏的当前页码
-      // 选择文章分类数据
-      options: [],
+      options: [], // 选择文章分类数据
       value: "全部",
+      searchContent: "", // 搜索内容
       isDisplayPagination: true,
     };
   },
@@ -192,30 +202,32 @@ export default {
   },
   watch: {
     // 选择文章分类
-    value(newVal) {
+    async value(newVal) {
       if (this.value === "全部") {
         this.isDisplayPagination = true;
         this.fetchData();
         return;
       }
+      if (!this.allData.length) {
+        const res = await getBlogList(1, this.count);
+        this.allData = res.data.rwos;
+      }
       this.isDisplayPagination = false;
       this.currentPage = 1;
       this.pagerCurrentPage = 1;
       this.srcList = [];
-      getBlogList(this.currentPage, this.count).then(({ data }) => {
-        this.data = data.rows.filter((data) => {
-          if (!data.category) {
-            data.category = {
-              name: "未分类",
-            };
-          }
-          if (data.category.name === newVal) {
-            data.createDate = formatDate(data.createDate);
-            // data.thumb = server_URL + data.thumb;
-            this.srcList.push(data.thumb);
-            return data;
-          }
-        });
+      this.data = this.allData.filter((data) => {
+        if (!data.category) {
+          data.category = {
+            name: "未分类",
+          };
+        }
+        if (data.category.name === newVal) {
+          data.createDate = formatDate(data.createDate);
+          // data.thumb = server_URL + data.thumb;
+          this.srcList.push(data.thumb);
+          return data;
+        }
       });
     },
   },
@@ -235,6 +247,66 @@ export default {
           this.fetchData();
         }
       });
+    },
+    async searchHandle() {
+      if (!this.searchContent) {
+        // 没有搜索内容
+        this.$message({
+          type: "error",
+          message: `请输入搜索内容`,
+        });
+        return;
+      }
+
+      if (!this.allData.length) {
+        const res = await getBlogList(1, this.count);
+        this.allData = res.data.rows;
+      }
+
+      // 搜索内容转小写
+      const searchContent = this.searchContent.toLowerCase();
+      let searchResultArr = [];
+      let srcList = [];
+      if (this.value === "全部") {
+        searchResultArr = this.allData.filter((item) => {
+          const title = item.title.toLowerCase();
+          if (title.includes(searchContent)) {
+            item.createDate = formatDate(item.createDate);
+            // item.thumb = server_URL + item.thumb;
+            srcList.push(item.thumb);
+            return item;
+          }
+        });
+      } else {
+        searchResultArr = this.data.filter((item) => {
+          const title = item.title.toLowerCase();
+          if (title.includes(searchContent)) {
+            // item.thumb = server_URL + item.thumb;
+            srcList.push(item.thumb);
+            return item;
+          }
+        });
+      }
+
+      const searchResultArrLength = searchResultArr.length;
+      if (searchResultArrLength) {
+        this.data = searchResultArr;
+        this.$message({
+          type: "success",
+          message: `共搜索到 ${searchResultArrLength} 个数据`,
+        });
+        if (this.value === "全部") {
+          this.isDisplayPagination = false;
+          this.currentPage = 1;
+          this.pagerCurrentPage = 1;
+          this.srcList = srcList;
+        }
+      } else {
+        this.$message({
+          type: "error",
+          message: `没有搜索到相关文章`,
+        });
+      }
     },
     // 跳转到具体的文章
     goToTitleHandle(blogInfo) {
@@ -272,30 +344,20 @@ export default {
     editBlogHandle(blogInfo) {
       this.$router.push(`/blog/editBlog/${blogInfo.id}`);
     },
-    // 四个分页组件方法
-    sizeChangeHandle(pageNum) {
-      this.eachPage = parseInt(pageNum);
-      this.currentPage = 1;
-      this.pagerCurrentPage = 1;
-      this.fetchData();
-    },
-    currentChangeHandle(pageNum) {
-      this.currentPage = parseInt(pageNum);
-      this.fetchData();
-    },
-    // 上一页
-    prevClickHandle() {
-      this.currentPage -= 1;
-    },
-    // 下一页
-    nextClickHandle() {
-      this.currentPage += 1;
-    },
   },
 };
 </script>
 
-<style lang="sass" scoped>
-.blog-list-container
-  padding: 20px
+<style lang="scss" scoped>
+.blog-list-container {
+  padding: 20px;
+
+  .el-select {
+    width: 10em;
+  }
+
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
+}
 </style>

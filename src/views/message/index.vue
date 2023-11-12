@@ -129,5 +129,13 @@ export default {
 <style lang="scss" scoped>
 .message-container {
   padding: 20px;
+
+  .el-select {
+    width: 8em;
+  }
+
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
 }
 </style>

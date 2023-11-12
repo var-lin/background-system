@@ -218,10 +218,16 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
-.blog-type-container
-  padding: 20px
+<style lang="scss" scoped>
+.blog-type-container {
+  padding: 20px;
 
-.blogAddInput
-  width: 400px
+  .blogAddInput {
+    width: 400px;
+  }
+
+  .input-with-select .el-select {
+    width: 5em;
+  }
+}
 </style>
