@@ -24,11 +24,12 @@ export default function (component, getCommentHandle, delHandle) {
                 this.listLoading = true;
                 getCommentHandle(this.currentPage, this.eachPage).then(({ data }) => {
                     this.listLoading = false;
-                    this.data = data.rows;
-                    for (let i of this.data) {
+                    this.searching = false
+                    for (let i of data.rows) {
                         // i.avatar = server_URL + i.avatar;
                         i.createDate = formatDate(i.createDate);
                     }
+                    this.data = Object.freeze(data.rows);
                     this.count = data.total;
                     this.totalPage = Math.ceil(this.count / this.eachPage); // 总页数
                     if (this.currentPage > this.totalPage) {
@@ -43,11 +44,11 @@ export default function (component, getCommentHandle, delHandle) {
                 if (this.allData.length == 0) {
                     // 拿到全部评论
                     await getCommentHandle(1, this.count).then(({ data }) => {
-                        this.allData = data.rows;
-                        for (let i of this.allData) {
+                        for (let i of data.rows) {
                             // i.avatar = server_URL + i.avatar;
                             i.createDate = formatDate(i.createDate);
                         }
+                        this.allData = Object.freeze(data.rows);
                     });
                 }
 
@@ -87,7 +88,7 @@ export default function (component, getCommentHandle, delHandle) {
 
                 const dataLength = data.length;
                 if (dataLength) {
-                    this.data = data;
+                    this.data = Object.freeze(data);
                     this.$message({
                         type: "success",
                         message: `共搜索到 ${dataLength} 个数据`,

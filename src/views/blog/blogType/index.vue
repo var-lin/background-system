@@ -145,7 +145,7 @@ export default {
       this.listLoading = true;
       getBlogType().then((res) => {
         this.listLoading = false;
-        this.data = res.data;
+        this.data = Object.freeze(res.data);
       });
     },
     // 添加文章

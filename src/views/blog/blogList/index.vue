@@ -223,10 +223,12 @@ export default {
           };
         }
         if (data.category.name === newVal) {
-          data.createDate = formatDate(data.createDate);
+          if (typeof data.createDate === "number") {
+            data.createDate = formatDate(data.createDate);
+          }
           // data.thumb = server_URL + data.thumb;
           this.srcList.push(data.thumb);
-          return data;
+          return Object.freeze(data);
         }
       });
     },
@@ -234,12 +236,13 @@ export default {
   methods: {
     fetchData() {
       getBlogList(this.currentPage, this.eachPage).then(({ data }) => {
-        this.data = data.rows;
-        for (let i of this.data) {
+        this.isDisplayPagination = true;
+        for (let i of data.rows) {
           i.createDate = formatDate(i.createDate);
           // i.thumb = server_URL + i.thumb;
           this.srcList.push(i.thumb);
         }
+        this.data = Object.freeze(data.rows);
         this.count = data.total;
         this.totalPage = Math.ceil(this.count / this.eachPage);
         if (this.currentPage > this.totalPage) {
@@ -271,7 +274,9 @@ export default {
         searchResultArr = this.allData.filter((item) => {
           const title = item.title.toLowerCase();
           if (title.includes(searchContent)) {
-            item.createDate = formatDate(item.createDate);
+            if (typeof data.createDate === "number") {
+              data.createDate = formatDate(data.createDate);
+            }
             // item.thumb = server_URL + item.thumb;
             srcList.push(item.thumb);
             return item;
@@ -290,7 +295,7 @@ export default {
 
       const searchResultArrLength = searchResultArr.length;
       if (searchResultArrLength) {
-        this.data = searchResultArr;
+        this.data = Object.freeze(searchResultArr);
         this.$message({
           type: "success",
           message: `共搜索到 ${searchResultArrLength} 个数据`,

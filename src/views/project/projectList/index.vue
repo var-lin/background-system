@@ -205,12 +205,12 @@ export default {
       this.listLoading = true;
       getProject().then(({ data }) => {
         this.listLoading = false;
-        this.data = data;
-        for (let i of this.data) {
+        for (let i of data) {
           // i.thumb2 = server_URL + i.thumb;
           // this.scrList.push(server_URL + i.thumb);
           this.scrList.push(i.thumb);
         }
+        this.data = Object.freeze(data);
         this.oldData = this.data;
       });
     },
