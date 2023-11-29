@@ -36,7 +36,6 @@ import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 import { getSetting } from "@/api/setting";
-// import { server_URL } from "@/urlConfig";
 
 export default {
   components: {
@@ -50,7 +49,6 @@ export default {
   },
   created() {
     getSetting().then((res) => {
-      // this.url = server_URL + res.data.avatar;
       this.url = res.data.avatar;
     });
   },
@@ -82,7 +80,7 @@ export default {
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: 0.3s;
     -webkit-tap-highlight-color: transparent;
 
     &:hover {
@@ -113,7 +111,7 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background 0.3s;
+        transition: 0.3s;
 
         &:hover {
           background: rgba(0, 0, 0, 0.025);

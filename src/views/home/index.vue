@@ -96,7 +96,6 @@
 
 <script>
 import { getBanner, setBanner } from "@/api/banner";
-// import { server_URL } from "@/urlConfig";
 import Upload from "@/components/Upload";
 
 export default {
@@ -123,10 +122,6 @@ export default {
     fetchData() {
       getBanner().then((res) => {
         this.data = res.data;
-        // for (let i of this.data) {
-        //   i.midImg2 = server_URL + i.midImg;
-        //   i.bigImg2 = server_URL + i.bigImg;
-        // }
       });
     },
     editBannerHandle(bannerInfo) {

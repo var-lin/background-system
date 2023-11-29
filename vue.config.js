@@ -42,7 +42,10 @@ module.exports = {
         target: 'http://127.0.0.1:7001'
       },
       '/api': {
-        target: 'http://127.0.0.1:7001'
+        target: 'http://127.0.0.1:7001',
+      },
+      "/static": {
+        target: "http://127.0.0.1:7001"
       }
     }
   },

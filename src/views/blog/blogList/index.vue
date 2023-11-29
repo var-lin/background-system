@@ -171,7 +171,7 @@ import { getBlogList, delOneBlog } from "@/api/blog";
 import { getBlogType } from "@/api/blogType";
 import { formatDate } from "@/utils/tools";
 import pagination from "@/mixins/pagination";
-// import { server_URL, frontEnd_URL } from "@/urlConfig";
+import { frontEnd_URL } from "@/urlConfig";
 
 export default {
   mixins: [pagination()],
@@ -226,7 +226,6 @@ export default {
           if (typeof data.createDate === "number") {
             data.createDate = formatDate(data.createDate);
           }
-          // data.thumb = server_URL + data.thumb;
           this.srcList.push(data.thumb);
           return Object.freeze(data);
         }
@@ -239,7 +238,6 @@ export default {
         this.isDisplayPagination = true;
         for (let i of data.rows) {
           i.createDate = formatDate(i.createDate);
-          // i.thumb = server_URL + i.thumb;
           this.srcList.push(i.thumb);
         }
         this.data = Object.freeze(data.rows);
@@ -277,7 +275,6 @@ export default {
             if (typeof data.createDate === "number") {
               data.createDate = formatDate(data.createDate);
             }
-            // item.thumb = server_URL + item.thumb;
             srcList.push(item.thumb);
             return item;
           }
@@ -286,7 +283,6 @@ export default {
         searchResultArr = this.data.filter((item) => {
           const title = item.title.toLowerCase();
           if (title.includes(searchContent)) {
-            // item.thumb = server_URL + item.thumb;
             srcList.push(item.thumb);
             return item;
           }

@@ -165,7 +165,6 @@
 <script>
 import { getSetting, setSetting } from "@/api/setting";
 import Upload from "@/components/Upload";
-// import { server_URL } from "@/urlConfig";
 
 export default {
   components: {
@@ -211,9 +210,6 @@ export default {
     fetchData() {
       getSetting().then(({ data }) => {
         this.form = { ...data };
-        // this.form.avatar2 = server_URL + this.form.avatar;
-        // this.form.qqQrCode2 = server_URL + this.form.qqQrCode;
-        // this.form.weixinQrCode2 = server_URL + this.form.weixinQrCode;
         this.form2 = { ...this.form };
       });
     },

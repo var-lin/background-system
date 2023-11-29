@@ -172,7 +172,6 @@
 
 <script>
 import { getProject, setProject, delProject } from "@/api/project";
-// import { server_URL } from "@/urlConfig";
 import Upload from "@/components/Upload";
 
 export default {
@@ -206,8 +205,6 @@ export default {
       getProject().then(({ data }) => {
         this.listLoading = false;
         for (let i of data) {
-          // i.thumb2 = server_URL + i.thumb;
-          // this.scrList.push(server_URL + i.thumb);
           this.scrList.push(i.thumb);
         }
         this.data = Object.freeze(data);

@@ -1,6 +1,5 @@
 import { formatDate } from "@/utils/tools";
 import pagination from "@/mixins/pagination"; // 分页
-// import { server_URL } from "@/urlConfig";
 
 export default function (component, getCommentHandle, delHandle) {
     return {
@@ -26,7 +25,6 @@ export default function (component, getCommentHandle, delHandle) {
                     this.listLoading = false;
                     this.searching = false
                     for (let i of data.rows) {
-                        // i.avatar = server_URL + i.avatar;
                         i.createDate = formatDate(i.createDate);
                     }
                     this.data = Object.freeze(data.rows);
@@ -45,7 +43,6 @@ export default function (component, getCommentHandle, delHandle) {
                     // 拿到全部评论
                     await getCommentHandle(1, this.count).then(({ data }) => {
                         for (let i of data.rows) {
-                            // i.avatar = server_URL + i.avatar;
                             i.createDate = formatDate(i.createDate);
                         }
                         this.allData = Object.freeze(data.rows);

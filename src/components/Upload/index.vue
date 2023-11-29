@@ -17,15 +17,9 @@
 </template>
 
 <script>
-// import { server_URL } from "@/urlConfig";
 export default {
   props: ["uploadTitle", "value"],
   computed: {
-    // imageUrl() {
-    //   if (this.value) {
-    //     return server_URL + this.value;
-    //   }
-    // },
     headers() {
       return {
         Authorization: "Bearer " + localStorage.getItem("adminToken"),
@@ -36,6 +30,9 @@ export default {
     handleAvatarSuccess(res) {
       if (!res.code && res.data) {
         this.$emit("input", res.data);
+        this.$message.success("上传图片成功");
+      } else {
+        this.$message.error(`上传图片失败 - ${res.msg}`);
       }
     },
   },
