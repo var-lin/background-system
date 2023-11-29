@@ -272,8 +272,8 @@ export default {
         searchResultArr = this.allData.filter((item) => {
           const title = item.title.toLowerCase();
           if (title.includes(searchContent)) {
-            if (typeof data.createDate === "number") {
-              data.createDate = formatDate(data.createDate);
+            if (typeof item.createDate === "number") {
+              item.createDate = formatDate(item.createDate);
             }
             srcList.push(item.thumb);
             return item;
