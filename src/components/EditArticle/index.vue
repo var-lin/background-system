@@ -108,13 +108,17 @@ export default {
   },
   methods: {
     addArticleHandle() {
+      // html结构里的a标签target属性添加_blank值
+      const htmlContent = this.$refs.toastuiEditor.invoke("getHTML");
+      const newHtmlContent = htmlContent.replace(/<a/g, '<a target="_blank"');
+
       const newData = {
         title: this.form.title,
         description: this.form.description,
         createDate: new Date().getTime(),
         categoryId: this.form.select,
         toc: [],
-        htmlContent: this.$refs.toastuiEditor.invoke("getHTML"),
+        htmlContent: newHtmlContent,
         thumb: this.form.thumb,
         markdownContent: this.$refs.toastuiEditor.invoke("getMarkdown"),
       };
