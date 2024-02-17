@@ -17,15 +17,6 @@ export function getInfo(token) {
   })
 }
 
-
-// 登出账号
-export function logout() {
-  return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
-  })
-}
-
 // 设置用户
 export function setUser(data) {
   return request({

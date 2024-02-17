@@ -22,6 +22,16 @@ export default {
       levelList: null,
     };
   },
+  computed: {
+    getDashboardTitle() {
+      const routes = this.$router.options.routes;
+      for (const item of routes) {
+        if (item.redirect === "/dashboard") {
+          return item.children[0].meta.title;
+        }
+      }
+    },
+  },
   watch: {
     $route() {
       this.getBreadcrumb();
@@ -39,9 +49,9 @@ export default {
       const first = matched[0];
 
       if (!this.isDashboard(first)) {
-        matched = [{ path: "/dashboard", meta: { title: "Dashboard" } }].concat(
-          matched
-        );
+        matched = [
+          { path: "/dashboard", meta: { title: this.getDashboardTitle } },
+        ].concat(matched);
       }
 
       this.levelList = matched.filter(

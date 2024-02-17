@@ -53,7 +53,7 @@ export default {
     });
   },
   computed: {
-    ...mapGetters(["sidebar", "avatar"]),
+    ...mapGetters(["sidebar"]),
   },
   methods: {
     toggleSideBar() {
